@@ -30,26 +30,33 @@ fruits_to_show = my_fruit_list.loc[fruits_selected]
 streamlit.dataframe(fruits_to_show)
 
 streamlit.header("Fruityvice Fruit Advice!")
-fruit_choice = streamlit.text_input('What fruit would you like information about?','Kiwi')
-streamlit.write('The user entered ', fruit_choice)
+# fruit_choice = streamlit.text_input('What fruit would you like information about?','Kiwi')
+# streamlit.write('The user entered ', fruit_choice)
+# 
+# #import requests
+# fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + "Kiwi")
+# #fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + "kiwi")
+# #fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+# #streamlit.text(fruityvice_response)
+# #streamlit.text(fruityvice_response.json())
+# 
+# # write your own comment -what does the next line do? 
+# fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+# # write your own comment - what does this do?
+# streamlit.dataframe(fruityvice_normalized)
 
-add_my_fruit = streamlit.text_input('What fruit would you like add?','jackfruit')
-streamlit.write('Thanks for adding ', add_my_fruit)
+try:
+  fruit_choice = streamlit.text_input('What fruit would you like information about?')
+  if not fruit_choice:
+    streamlit.error("Please select a fruit to get information")
+  else:
+    fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + fruit_choice)
+    fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
+    streamlit.dataframe(fruityvice_normalized)
+    
+ except URLError as e:
+  streamlit.error()
 
-
-
-#import requests
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + "Kiwi")
-#fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + "kiwi")
-#fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-#streamlit.text(fruityvice_response)
-#streamlit.text(fruityvice_response.json())
-
-
-# write your own comment -what does the next line do? 
-fruityvice_normalized = pandas.json_normalize(fruityvice_response.json())
-# write your own comment - what does this do?
-streamlit.dataframe(fruityvice_normalized)
 
 streamlit.stop()
 #import snowflake.connector
@@ -66,5 +73,8 @@ streamlit.header("The fruit load list contains:")
 #streamlit.text(my_data_row)
 #streamlit.dataframe(my_data_row)
 streamlit.dataframe(my_data_rows)
+
+add_my_fruit = streamlit.text_input('What fruit would you like add?','jackfruit')
+streamlit.write('Thanks for adding ', add_my_fruit)
 
 my_cur.execute("insert into PC_RIVERY_DB.PUBLIC.FRUIT_LOAD_LIST values ('from streamlit')")
